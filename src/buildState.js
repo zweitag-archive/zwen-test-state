@@ -5,9 +5,25 @@ export default function buildState(template, seed) {
     faker.seed(seed);
   }
 
-  return Object.entries(template).reduce((acc, [key, value]) => {
-    const fakerPath = value.split('.');
-    acc[key] = faker[fakerPath[0]][fakerPath[1]]();
-    return acc;
-  }, {});
+  return translateValue(template);
+}
+
+function translateValue(value) {
+  if (typeof value === 'string') {
+    const [domain, method] = value.split('.');
+    return faker[domain][method]();
+  }
+
+  if (value instanceof Array) {
+    return value.map(subValue => translateValue(subValue));
+  }
+
+  if (value instanceof Object) {
+    return Object.entries(value).reduce((acc, [key, subValue]) => {
+      acc[key] = translateValue(subValue);
+      return acc;
+    }, {});
+  }
+
+  return value;
 }
