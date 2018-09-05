@@ -22,15 +22,19 @@ describe('createAmounts', () => {
     };
     const settings = {
       'people': `${RANGE} 3...5`,
+      'people.connections': `${AMOUNT} 2`,
       'pets': `${AMOUNT} 2`,
     };
 
     const result = createAmounts(template, settings);
     const allPeople = Object.entries(result.people);
 
-    expect(result.pets).toHaveLength(2);
     expect(allPeople.length).toBeGreaterThan(3);
     expect(allPeople.length).toBeLessThan(5);
+
+    expect(allPeople.every(({ connection }) => connection.length === 2)).toBeTrue();
+
+    expect(result.pets).toHaveLength(2);
 
   });
 });

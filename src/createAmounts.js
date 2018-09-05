@@ -8,6 +8,7 @@ import {
   KEY,
   RANGE,
 } from './constants';
+import { sortByPathLength } from './utils';
 
 export default function createAmounts(_template: Template, settings: Settings) {
   let template = _template;
@@ -16,6 +17,7 @@ export default function createAmounts(_template: Template, settings: Settings) {
     .map(([key, value]) => [String(key), String(value)])
     .filter(([path, option]) => option.startsWith(AMOUNT) || option.startsWith(RANGE))
     .map(([path, option]) => [path, getAmountFromOption(option)])
+    .sort(sortByPathLength)
     .forEach((setting) => {
       template = applyAmountSetting(template, setting)
     });
