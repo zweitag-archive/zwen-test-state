@@ -1,16 +1,16 @@
 import faker from 'faker';
-import buildState from './buildState';
+import fillFakeData from './fillFakeData';
 
 const SEED = 321;
 
 const reset = () => faker.seed(SEED);
 
-describe('buildState', () => {
+describe('fillFakeData', () => {
   it('should call the correct faker methods', () => {
     const template = {
       myName: 'name.firstName',
     };
-    const result = buildState(template, SEED);
+    const result = fillFakeData(template, SEED);
 
     reset();
 
@@ -24,7 +24,7 @@ describe('buildState', () => {
       myName: 'name.firstName',
       yourName: 'name.firstName',
     };
-    const result = buildState(template, SEED);
+    const result = fillFakeData(template, SEED);
 
     reset();
 
@@ -47,7 +47,7 @@ describe('buildState', () => {
         }],
       },
     };
-    const result = buildState(template, SEED);
+    const result = fillFakeData(template, SEED);
 
     reset();
 

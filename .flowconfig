@@ -1,0 +1,13 @@
+[ignore]
+
+[include]
+
+[libs]
+src/_flowTypes.js
+
+[lints]
+
+[options]
+experimental.const_params=true
+
+[strict]

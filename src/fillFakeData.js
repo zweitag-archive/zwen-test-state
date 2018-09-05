@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-export default function buildState(template, seed) {
+export default function fillFakeData(template, seed) {
   if (seed) {
     faker.seed(seed);
   }

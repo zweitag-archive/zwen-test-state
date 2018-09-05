@@ -11,18 +11,25 @@
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "faker": "^4.1.0"
+    "faker": "^4.1.0",
+    "flow-bin": "^0.80.0",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2"
   },
   "devDependencies": {
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "babel-jest": "^23.4.2",
     "jest": "^23.5.0"
   },
   "babel": {
     "presets": [
       "@babel/preset-env"
-    ]
+    ],
+    "plugins": ["@babel/plugin-transform-flow-strip-types"]
   },
   "scripts": {
+    "flow": "flow check",
     "test": "jest --watch"
   }
 }
