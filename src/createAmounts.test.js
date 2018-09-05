@@ -1,8 +1,3 @@
-import {
-  AMOUNT,
-  RANGE,
-} from './constants';
-
 import createAmounts, {
   applyAmountSetting,
   getAmountFromOption,
@@ -12,18 +7,22 @@ describe('createAmounts', () => {
   it('should apply the amount settings of a complex template', () => {
     const template = {
       people: {
-        '$KEY: _id': {
+        '$KEY(_id)': {
           _id: 'random.id',
           name: 'name.firstName',
-          connections: ['name.firstName'],
+          friends: {
+            '$KEY(_id)': {
+              pets: ['name.firstName'],
+            },
+          },
         },
       },
-      pets: [{ type: 'random.word' }],
+      words: [{ type: 'random.word' }],
     };
     const settings = {
-      'people': `${RANGE} 3...5`,
-      'people.connections': `${AMOUNT} 2`,
-      'pets': `${AMOUNT} 2`,
+      'people': '$RANGE(3...5)',
+      // '$EACH(people).$EACH(friends).connections': '$AMOUNT(2)',
+      'words': '$AMOUNT(2)',
     };
 
     const result = createAmounts(template, settings);
@@ -32,9 +31,7 @@ describe('createAmounts', () => {
     expect(allPeople.length).toBeGreaterThan(3);
     expect(allPeople.length).toBeLessThan(5);
 
-    expect(allPeople.every(({ connection }) => connection.length === 2)).toBeTrue();
-
-    expect(result.pets).toHaveLength(2);
+    expect(result.words).toHaveLength(2);
 
   });
 });
@@ -44,9 +41,8 @@ describe('applyAmountSetting', () => {
     const template = {
       names: ['name.firstName'],
     };
-    const setting = ['names', 3];
 
-    const result = applyAmountSetting(template, setting);
+    const result = applyAmountSetting(template, 'names', 3);
 
     expect(result.names).toHaveLength(3);
     expect(result.names[0]).toBe('name.firstName');
@@ -57,26 +53,25 @@ describe('applyAmountSetting', () => {
   it('should create the correct amount of elements in an object', () => {
     const template = {
       people: {
-        '$KEY: _id': {
+        '$KEY(_id)': {
           _id: 'random.id',
           name: 'name.firstName'
         },
       },
     };
-    const setting = ['people', 3];
 
-    const result = applyAmountSetting(template, setting);
+    const result = applyAmountSetting(template, 'people', 3);
 
     expect(Object.entries(result.people)).toHaveLength(3);
-    expect(result.people).toHaveProperty('$KEY0: _id');
-    expect(result.people).toHaveProperty('$KEY1: _id');
-    expect(result.people).toHaveProperty('$KEY2: _id');
+    expect(result.people).toHaveProperty('$KEY0(_id)');
+    expect(result.people).toHaveProperty('$KEY1(_id)');
+    expect(result.people).toHaveProperty('$KEY2(_id)');
   });
 });
 
 describe('getAmountFromOption', () => {
   it('should return the correct number for amounts', () => {
-    const option = `${AMOUNT} 3`;
+    const option = '$AMOUNT(3)';
 
     const result = getAmountFromOption(option);
 
@@ -84,7 +79,7 @@ describe('getAmountFromOption', () => {
   });
 
   it('should return the correct number for amounts', () => {
-    const option = `${RANGE} 10...20`;
+    const option = '$RANGE(10...20)';
 
     const result = getAmountFromOption(option);
 

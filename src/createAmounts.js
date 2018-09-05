@@ -8,26 +8,28 @@ import {
   KEY,
   RANGE,
 } from './constants';
-import { sortByPathLength } from './utils';
+import {
+  getRegexMatch,
+  sortByPathLength
+} from './utils';
 
 export default function createAmounts(_template: Template, settings: Settings) {
   let template = _template;
 
   Object.entries(settings)
     .map(([key, value]) => [String(key), String(value)])
-    .filter(([path, option]) => option.startsWith(AMOUNT) || option.startsWith(RANGE))
+    .filter(([path, option]) => option.match(AMOUNT) || option.match(RANGE))
     .map(([path, option]) => [path, getAmountFromOption(option)])
     .sort(sortByPathLength)
-    .forEach((setting) => {
-      template = applyAmountSetting(template, setting)
+    .forEach(([path, amount]) => {
+      template = applyAmountSetting(template, path, amount);
     });
 
   return template;
 }
 
-export function applyAmountSetting(_template: Template, setting: [string, number]) {
+export function applyAmountSetting(_template: Template, path: string, amount: number) {
   const template = _cloneDeep(_template);
-  const [path, amount] = setting;
 
   const amountable: Amountable = _get(template, path);
   const [key, element] = Object.entries(amountable)[0];
@@ -39,7 +41,7 @@ export function applyAmountSetting(_template: Template, setting: [string, number
       amountedElement.push(clonedElement);
 
     } else {
-      const updatedKey = key.replace(KEY, `${KEY}${i}`);
+      const updatedKey = key.replace('$KEY', `$KEY${i}`);
       amountedElement[updatedKey] = clonedElement;
     }
   }
@@ -50,11 +52,12 @@ export function applyAmountSetting(_template: Template, setting: [string, number
 }
 
 export function getAmountFromOption(option: string): number {
-  if (option.startsWith(AMOUNT)) {
-    return parseInt(option.replace(AMOUNT, ''), 10);
+  if (option.match(AMOUNT)) {
+    return parseInt(getRegexMatch(option, AMOUNT));
 
   } else {
-    const [max, min] = option.replace(RANGE, '').split('...').map(Number);
+    const match = getRegexMatch(option, RANGE);
+    const [max, min] = match.split('...').map(Number);
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }
