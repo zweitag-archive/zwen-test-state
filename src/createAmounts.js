@@ -1,4 +1,5 @@
 // @flow
+import _cloneDeep from 'lodash.clonedeep';
 import _get from 'lodash.get';
 import _set from 'lodash.set';
 
@@ -8,38 +9,50 @@ import {
   RANGE,
 } from './constants';
 
-export default function createAmounts(template: Template, settings: Settings) {
-  // Supress flow because of https://github.com/facebook/flow/issues/2221
-  // $FlowFixMe
-  const amountSettings: Array<string[]> = Object.entries(settings)
-  // $FlowFixMe
-    .filter(([path, option]) => option.startsWith(AMOUNT) || option.startsWith(RANGE));
+export default function createAmounts(_template: Template, settings: Settings) {
+  let template = _template;
 
-  amountSettings.forEach(([path, option]) => {
-    const amountable: Amountable = _get(template, path);
-    const amount: number = parseInt(option.replace(AMOUNT, ''), 10);
-    let amountedElement;
-
-    if (amountable instanceof Array) {
-      amountedElement = [];
-      const elementToCopy = amountable[0];
-
-      for (let i = 0; i < amount; i++) {
-        amountedElement.push(elementToCopy);
-      }
-
-    } else if (amountable instanceof Object) {
-      amountedElement = {};
-      const [key, element] = Object.entries(amountable)[0];
-
-      for (let i = 0; i < amount; i++) {
-        const keyWithAmount = key.replace(KEY, `${KEY}${i}`);
-        amountedElement[keyWithAmount] = element;
-      }
-    }
-
-    _set(template, path, amountedElement);
-  });
+  Object.entries(settings)
+    .map(([key, value]) => [String(key), String(value)])
+    .filter(([path, option]) => option.startsWith(AMOUNT) || option.startsWith(RANGE))
+    .map(([path, option]) => [path, getAmountFromOption(option)])
+    .forEach((setting) => {
+      template = applyAmountSetting(template, setting)
+    });
 
   return template;
+}
+
+export function applyAmountSetting(_template: Template, setting: [string, number]) {
+  const template = _cloneDeep(_template);
+  const [path, amount] = setting;
+
+  const amountable: Amountable = _get(template, path);
+  const [key, element] = Object.entries(amountable)[0];
+  const amountedElement = amountable instanceof Array ? [] : {};
+
+  for (let i = 0; i < amount; i++) {
+    const clonedElement = _cloneDeep(element);
+    if (amountedElement instanceof Array) {
+      amountedElement.push(clonedElement);
+
+    } else {
+      const updatedKey = key.replace(KEY, `${KEY}${i}`);
+      amountedElement[updatedKey] = clonedElement;
+    }
+  }
+
+  _set(template, path, amountedElement);
+
+  return template;
+}
+
+export function getAmountFromOption(option: string): number {
+  if (option.startsWith(AMOUNT)) {
+    return parseInt(option.replace(AMOUNT, ''), 10);
+
+  } else {
+    const [max, min] = option.replace(RANGE, '').split('...').map(Number);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
 }
