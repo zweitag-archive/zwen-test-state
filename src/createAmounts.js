@@ -4,6 +4,7 @@ import _set from 'lodash.set';
 
 import {
   AMOUNT,
+  KEY,
   RANGE,
 } from './constants';
 
@@ -17,16 +18,27 @@ export default function createAmounts(template: Template, settings: Settings) {
   amountSettings.forEach(([path, option]) => {
     const amountable: Amountable = _get(template, path);
     const amount: number = parseInt(option.replace(AMOUNT, ''), 10);
+    let amountedElement;
 
     if (amountable instanceof Array) {
-      const amountedElement = [];
+      amountedElement = [];
       const elementToCopy = amountable[0];
 
       for (let i = 0; i < amount; i++) {
         amountedElement.push(elementToCopy);
       }
-      _set(template, path, amountedElement);
+
+    } else if (amountable instanceof Object) {
+      amountedElement = {};
+      const [key, element] = Object.entries(amountable)[0];
+
+      for (let i = 0; i < amount; i++) {
+        const keyWithAmount = key.replace(KEY, `${KEY}${i}`);
+        amountedElement[keyWithAmount] = element;
+      }
     }
+
+    _set(template, path, amountedElement);
   });
 
   return template;
