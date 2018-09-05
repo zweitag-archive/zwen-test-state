@@ -5,13 +5,14 @@ import _set from 'lodash.set';
 
 import {
   AMOUNT,
-  KEY,
   RANGE,
 } from './constants';
 import {
   getRegexMatch,
   sortByPathLength
 } from './utils';
+
+type Amountable = Object | Array<any>;
 
 export default function createAmounts(_template: Template, settings: Settings): Template {
   let template = _template;

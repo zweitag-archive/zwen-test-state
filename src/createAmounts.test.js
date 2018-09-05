@@ -21,7 +21,8 @@ describe('createAmounts', () => {
     };
     const settings = {
       'people': '$RANGE(3...5)',
-      // '$EACH(people).$EACH(friends).connections': '$AMOUNT(2)',
+      // 'people.friends.connections': '$AMOUNT(2)',
+      // check if 'friends' exists on people - otherwise people is object with people with friends
       'words': '$AMOUNT(2)',
     };
 

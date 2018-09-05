@@ -1,6 +1,8 @@
 // @flow
 import faker from 'faker';
 
+type TranslateValue = string | Array<any> | Object;
+
 export default function fillFakeData(template: Template, seed: number) {
   if (seed) {
     faker.seed(seed);
@@ -8,8 +10,6 @@ export default function fillFakeData(template: Template, seed: number) {
 
   return translateValue(template);
 }
-
-type TranslateValue = string | Array<any> | Object;
 
 function translateValue(value: TranslateValue): TranslateValue {
   if (typeof value === 'string') {

@@ -1,5 +1,5 @@
 // @flow
-export const KEY: string = '$KEY';
-
 export const AMOUNT = /\$AMOUNT\(([^)(]*)\)/;
+export const EACH = /\$EACH\(([^)(]*)\)/;
+export const KEY = /\$KEY\(([^)(]*)\)/;
 export const RANGE = /\$RANGE\(([^)(]*)\)/;
