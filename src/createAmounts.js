@@ -13,7 +13,7 @@ import {
   sortByPathLength
 } from './utils';
 
-export default function createAmounts(_template: Template, settings: Settings) {
+export default function createAmounts(_template: Template, settings: Settings): Template {
   let template = _template;
 
   Object.entries(settings)
@@ -28,8 +28,8 @@ export default function createAmounts(_template: Template, settings: Settings) {
   return template;
 }
 
-export function applyAmountSetting(_template: Template, path: string, amount: number) {
-  const template = _cloneDeep(_template);
+export function applyAmountSetting(_template: Template, path: string, amount: number): Template {
+  const template: Template = _cloneDeep(_template);
 
   const amountable: Amountable = _get(template, path);
   const [key, element] = Object.entries(amountable)[0];

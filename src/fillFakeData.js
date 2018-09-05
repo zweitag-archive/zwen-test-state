@@ -1,6 +1,7 @@
+// @flow
 import faker from 'faker';
 
-export default function fillFakeData(template, seed) {
+export default function fillFakeData(template: Template, seed: number) {
   if (seed) {
     faker.seed(seed);
   }
@@ -8,19 +9,21 @@ export default function fillFakeData(template, seed) {
   return translateValue(template);
 }
 
-function translateValue(value) {
+type TranslateValue = string | Array<any> | Object;
+
+function translateValue(value: TranslateValue): TranslateValue {
   if (typeof value === 'string') {
     const [domain, method] = value.split('.');
     return faker[domain][method]();
   }
 
   if (value instanceof Array) {
-    return value.map(subValue => translateValue(subValue));
+    return value.map((subValue: TranslateValue) => translateValue(subValue));
   }
 
   if (value instanceof Object) {
-    return Object.entries(value).reduce((acc, [key, subValue]) => {
-      acc[key] = translateValue(subValue);
+    return Object.keys(value).reduce((acc, key: string) => {
+      acc[key] = translateValue(value[key]);
       return acc;
     }, {});
   }
