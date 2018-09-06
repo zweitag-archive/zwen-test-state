@@ -17,11 +17,15 @@ export default class State {
     this.testCases = {};
   }
 
-  addTestCase(name: string, settings: Settings) {
-    const caseState: Template = _cloneDeep(this.template);
-    createAmounts(caseState, settings);
+  getTestCase(name: string): Template {
+    return this.testCases[name] || {};
+  }
 
-    // ...
+  addTestCase(name: string, settings: Settings) {
+    let caseState: Template = _cloneDeep(this.template);
+    caseState = createAmounts(caseState, settings);
+    caseState = fillFakeData(caseState, this.seed);
+
     this.testCases[name] = caseState;
   }
 }

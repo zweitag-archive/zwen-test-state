@@ -51,6 +51,7 @@ export function applyAmounts(
         template[key] = applyAmounts(template[key], segments, amount, true);
       });
     }
+
     return template;
   }
 

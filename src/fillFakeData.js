@@ -3,18 +3,26 @@ import faker from 'faker';
 
 type TranslateValue = string | Array<any> | Object;
 
-export default function fillFakeData(template: Template, seed: number) {
+export default function fillFakeData(template: Template, seed: number): Template {
   if (seed) {
     faker.seed(seed);
   }
 
-  return translateValue(template);
+  const translatedTemplate = translateValue(template);
+
+  if (typeof translatedTemplate === 'object') {
+    return translatedTemplate;
+  }
+
+  return {};
 }
 
 function translateValue(value: TranslateValue): TranslateValue {
   if (typeof value === 'string') {
     const [domain, method] = value.split('.');
-    return faker[domain][method]();
+    if (domain && method) {
+      return faker[domain][method]();
+    }
   }
 
   if (value instanceof Array) {
