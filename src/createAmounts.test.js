@@ -1,4 +1,5 @@
 import createAmounts, {
+  applyAmounts,
   applyAmountSetting,
   getAmountFromOption,
 } from './createAmounts';
@@ -21,8 +22,7 @@ describe('createAmounts', () => {
     };
     const settings = {
       'people': '$RANGE(3...5)',
-      // 'people.friends.connections': '$AMOUNT(2)',
-      // check if 'friends' exists on people - otherwise people is object with people with friends
+      'people.friends.pets': '$AMOUNT(2)',
       'words': '$AMOUNT(2)',
     };
 
@@ -32,41 +32,136 @@ describe('createAmounts', () => {
     expect(allPeople.length).toBeGreaterThan(3);
     expect(allPeople.length).toBeLessThan(5);
 
+    expect(result.people['$KEY0(_id)'].friends['$KEY(_id)'].pets).toHaveLength(2);
+
     expect(result.words).toHaveLength(2);
 
   });
 });
 
+describe('applyAmounts', () => {
+  it('should apply the amount setting to the current template if the segments are empty', () => {
+    const template = ['name.firstName'];
+    const segments = [];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result).toHaveLength(2);
+  });
+
+  it('should apply amounts to flat nestings', () => {
+    const template = {
+      people: ['name.firstName'],
+    };
+    const segments = ['people'];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result).toHaveProperty('people');
+    expect(result.people).toHaveLength(2);
+  });
+
+  it('should apply amounts to flat nestings with unkown length', () => {
+    const template = {
+      firstKey: {
+        people: ['name.firstName'],
+      },
+    };
+    const segments = ['people'];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result.firstKey.people).toHaveLength(2);
+  });
+
+  it('should apply amounts to deep object nestings with unkown length', () => {
+    const template = {
+      people: {
+        Bob: {
+          friends: {
+            Peter: {
+              pets: ['name.firstName'],
+            },
+          },
+        },
+      },
+    };
+    const segments = ['people', 'friends', 'pets'];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result.people.Bob.friends.Peter.pets).toHaveLength(2);
+  });
+
+  it('should apply amounts to deep array nestings with unkown length', () => {
+    const template = {
+      people: {
+        Bob: {
+          friends: [{
+            pets: ['name.firstName'],
+          }],
+        },
+      },
+    };
+    const segments = ['people', 'friends', 'pets'];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result.people.Bob.friends[0].pets).toHaveLength(2);
+  });
+
+  it('should not look deeper than one level if the key does not exist', () => {
+    const template = {
+      people: {
+        Bob: {
+          schoolFriends: {
+            Peter: {
+              pets: ['name.firstName'],
+            },
+          },
+        }
+      },
+    };
+    const segments = ['people', 'pets'];
+    const amount = 2;
+
+    const result = applyAmounts(template, segments, amount);
+
+    expect(result.people.Bob.schoolFriends.Peter.pets).not.toHaveLength(2);
+  });
+});
+
 describe('applyAmountSetting', () => {
   it('should create the correct amount of elements in an array', () => {
-    const template = {
-      names: ['name.firstName'],
-    };
+    const template = ['name.firstName'];
 
-    const result = applyAmountSetting(template, 'names', 3);
+    const result = applyAmountSetting(template, 3);
 
-    expect(result.names).toHaveLength(3);
-    expect(result.names[0]).toBe('name.firstName');
-    expect(result.names[1]).toBe('name.firstName');
-    expect(result.names[2]).toBe('name.firstName');
+    expect(result).toHaveLength(3);
+    expect(result[0]).toBe('name.firstName');
+    expect(result[1]).toBe('name.firstName');
+    expect(result[2]).toBe('name.firstName');
   });
 
   it('should create the correct amount of elements in an object', () => {
     const template = {
-      people: {
-        '$KEY(_id)': {
-          _id: 'random.id',
-          name: 'name.firstName'
-        },
+      '$KEY(_id)': {
+        _id: 'random.id',
+        name: 'name.firstName'
       },
     };
 
-    const result = applyAmountSetting(template, 'people', 3);
+    const result = applyAmountSetting(template, 3);
 
-    expect(Object.entries(result.people)).toHaveLength(3);
-    expect(result.people).toHaveProperty('$KEY0(_id)');
-    expect(result.people).toHaveProperty('$KEY1(_id)');
-    expect(result.people).toHaveProperty('$KEY2(_id)');
+    expect(Object.entries(result)).toHaveLength(3);
+    expect(result).toHaveProperty('$KEY0(_id)');
+    expect(result).toHaveProperty('$KEY1(_id)');
+    expect(result).toHaveProperty('$KEY2(_id)');
   });
 });
 

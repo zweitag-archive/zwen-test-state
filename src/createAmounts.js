@@ -23,33 +23,58 @@ export default function createAmounts(_template: Template, settings: Settings): 
     .map(([path, option]) => [path, getAmountFromOption(option)])
     .sort(sortByPathLength)
     .forEach(([path, amount]) => {
-      template = applyAmountSetting(template, path, amount);
+      template = applyAmounts(template, path.split('.'), amount);
     });
 
   return template;
 }
 
-export function applyAmountSetting(_template: Template, path: string, amount: number): Template {
-  const template: Template = _cloneDeep(_template);
 
-  const amountable: Amountable = _get(template, path);
-  const [key, element] = Object.entries(amountable)[0];
-  const amountedElement = amountable instanceof Array ? [] : {};
+export function applyAmounts(
+  template: Template,
+  segments: Array<string>,
+  amount: number,
+  isNested?: boolean
+): Template {
+  if (segments.length === 0) {
+    return applyAmountSetting(template, amount);
+  }
+
+  const next = segments[0];
+
+  if (template instanceof Object) {
+    if (template.hasOwnProperty(next)) {
+      template[next] = applyAmounts(template[next], segments.slice(1), amount);
+
+    } else if (!isNested) {
+      Object.keys(template).forEach(key => {
+        template[key] = applyAmounts(template[key], segments, amount, true);
+      });
+    }
+    return template;
+  }
+
+  return template.map(t => applyAmounts(t, segments, amount, true));
+}
+
+export function applyAmountSetting(template: Template, amount: number): Template {
+  const isArray = template instanceof Array;
+  const newTemplate = isArray ? [] : {};
+  const [key, element] = Object.entries(template)[0];
 
   for (let i = 0; i < amount; i++) {
     const clonedElement = _cloneDeep(element);
-    if (amountedElement instanceof Array) {
-      amountedElement.push(clonedElement);
+
+    if (newTemplate instanceof Array) {
+      newTemplate.push(clonedElement);
 
     } else {
       const updatedKey = key.replace('$KEY', `$KEY${i}`);
-      amountedElement[updatedKey] = clonedElement;
+      newTemplate[updatedKey] = clonedElement;
     }
   }
 
-  _set(template, path, amountedElement);
-
-  return template;
+  return newTemplate;
 }
 
 export function getAmountFromOption(option: string): number {

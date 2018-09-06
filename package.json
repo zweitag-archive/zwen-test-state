@@ -1,12 +1,12 @@
 {
-  "name": "zwen-test-helper",
+  "name": "fake-state",
   "version": "0.0.1",
   "author": "Alex Kott <alexander.kott@zweitag.de>",
   "description": "Create test data for your redux state",
-  "repository": "zweitag/zwen-test-helper",
+  "repository": "zweitag/fake-state",
   "license": "MIT",
   "main": "lib/index.js",
-  "bugs": "https://github.com/zweitag/zwen-test-helper/issues",
+  "bugs": "https://github.com/zweitag/fake-state/issues",
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
@@ -26,7 +26,9 @@
     "presets": [
       "@babel/preset-env"
     ],
-    "plugins": ["@babel/plugin-transform-flow-strip-types"]
+    "plugins": [
+      "@babel/plugin-transform-flow-strip-types"
+    ]
   },
   "scripts": {
     "flow": "flow check",
