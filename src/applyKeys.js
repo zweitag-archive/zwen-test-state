@@ -1,5 +1,6 @@
 // @flow
 import { KEY } from './constants';
+import { getRegexMatch } from './utils';
 
 export default function applyKeys(template: Template): Template {
   if (template instanceof Array) {
@@ -9,15 +10,13 @@ export default function applyKeys(template: Template): Template {
   if (template instanceof Object) {
     Object.entries(template).forEach(([key, value]) => {
       if (value instanceof Object) {
-        const match = key.match(KEY);
+        const match = getRegexMatch(key, KEY);
 
-        if (match) {
-          const ref = match[1];
-          const newKey = value[ref] || key;
+        if (!!match) {
+          const newKey = value[match];
+          template[newKey] = value;
 
           delete template[key];
-
-          template[newKey] = value;
 
         } else {
           template[key] = applyKeys(value);
