@@ -25,6 +25,7 @@ describe('State', () => {
     const result = state.getTestCase('standard');
 
     expect(Object.entries(result.people)).toHaveLength(3);
+    expect(Object.keys(result.people)[0]).toBe('SAS');
     expect(Object.values(result.people)[0].name).toBe('Arianna');
   });
 });

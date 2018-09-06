@@ -1,6 +1,7 @@
 // @flow
 import _cloneDeep from 'lodash.clonedeep';
 
+import applyKeys from './applyKeys';
 import createAmounts from './createAmounts';
 import fillFakeData from './fillFakeData';
 
@@ -25,6 +26,7 @@ export default class State {
     let caseState: Template = _cloneDeep(this.template);
     caseState = createAmounts(caseState, settings);
     caseState = fillFakeData(caseState, this.seed);
+    caseState = applyKeys(caseState);
 
     this.testCases[name] = caseState;
   }
