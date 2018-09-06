@@ -27,5 +27,8 @@ describe('State', () => {
     expect(Object.entries(result.people)).toHaveLength(3);
     expect(Object.keys(result.people)[0]).toBe('SAS');
     expect(Object.values(result.people)[0].name).toBe('Arianna');
+
+    expect(Object.values(result.people)[0].friends.length).toBeGreaterThan(0);
+    expect(Object.values(result.people)[0].friends.length).toBeLessThan(3);
   });
 });
