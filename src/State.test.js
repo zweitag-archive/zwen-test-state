@@ -23,11 +23,15 @@ describe('State', () => {
 
     const result = state.getTestCase('standard');
 
-    expect(Object.entries(result.people)).toHaveLength(3);
-    expect(Object.keys(result.people)[0]).toBe('SAS');
-    expect(Object.values(result.people)[0].name).toBe('Arianna');
+    const peopleArr = Object.entries(result.people);
+    expect(peopleArr).toHaveLength(3);
+    expect(peopleArr[0][0]).toBe('SAS');
+    expect(peopleArr[0][1].name).toBe('Arianna');
 
-    expect(Object.values(result.people)[0].friends.length).toBeGreaterThan(0);
-    expect(Object.values(result.people)[0].friends.length).toBeLessThan(3);
+    const friendsArr = peopleArr[0][1].friends;
+    expect(friendsArr.length).toBeGreaterThan(0);
+    expect(friendsArr.length).toBeLessThan(3);
+
+    expect(Object.keys(result.people).includes(friendsArr[0])).toBe(true);
   });
 });

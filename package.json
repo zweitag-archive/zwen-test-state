@@ -1,25 +1,28 @@
 {
-  "name": "fake-state",
-  "version": "0.0.1",
-  "author": "Alex Kott <alexander.kott@zweitag.de>",
+  "name": "zwen-test-state",
+  "version": "0.1.0",
+  "author": "Zweitag GmbH @zweitag",
+  "contributors": [
+    "Alex Kott <alexander.kott@zweitag.de>"
+  ],
   "description": "Create test data for your redux state",
-  "repository": "zweitag/fake-state",
+  "repository": "zweitag/zwen-test-state",
   "license": "MIT",
   "main": "lib/index.js",
-  "bugs": "https://github.com/zweitag/fake-state/issues",
+  "bugs": "https://github.com/zweitag/zwen-test-state/issues",
   "dependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "babel-core": "^7.0.0-bridge.0",
     "faker": "^4.1.0",
-    "flow-bin": "^0.80.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
+    "flow-bin": "^0.80.0",
     "jest": "^23.5.0"
   },
   "babel": {
