@@ -1,9 +1,9 @@
 // @flow
 import _cloneDeep from 'lodash.clonedeep';
 
-import applyKeys from './applyKeys';
-import createAmounts from './createAmounts';
-import fillFakeData from './fillFakeData';
+import applyKeys from './operations/keys';
+import createAmounts from './operations/amounts';
+import fillFakeData from './operations/fakeData';
 
 export default class State {
   template: Template

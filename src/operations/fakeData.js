@@ -10,7 +10,7 @@ export default function fillFakeData(template: Template, seed: number): Template
 
   const translatedTemplate = translateValue(template);
 
-  if (typeof translatedTemplate === 'object') {
+  if (translatedTemplate instanceof Object) {
     return translatedTemplate;
   }
 

@@ -1,11 +1,11 @@
 import faker from 'faker';
-import fillFakeData from './fillFakeData';
+import fillFakeData from './fakeData';
 
 const SEED = 321;
 
 const reset = () => faker.seed(SEED);
 
-describe('fillFakeData', () => {
+describe('operations/fakeData/fillFakeData', () => {
   it('should call the correct faker methods', () => {
     const template = {
       myName: 'name.firstName',

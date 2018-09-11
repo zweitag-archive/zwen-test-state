@@ -1,5 +1,4 @@
 // @flow
-
 export function getRegexMatch(str: string, regex: RegExp) {
   const match = regex.exec(str);
   return match ? match[1] : '';

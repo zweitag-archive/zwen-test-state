@@ -1,6 +1,6 @@
 // @flow
-import { KEY } from './constants';
-import { getRegexMatch } from './utils';
+import { KEY } from '../constants';
+import { getRegexMatch } from '../utils';
 
 export default function applyKeys(template: Template): Template {
   if (template instanceof Array) {

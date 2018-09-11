@@ -6,11 +6,11 @@ import _set from 'lodash.set';
 import {
   AMOUNT,
   RANGE,
-} from './constants';
+} from '../constants';
 import {
   getRegexMatch,
   sortByPathLength
-} from './utils';
+} from '../utils';
 
 type Amountable = Object | Array<any>;
 
@@ -31,11 +31,11 @@ export default function createAmounts(_template: Template, settings: Settings): 
 
 
 export function applyAmounts(
-  template: Template,
+  template: Amountable,
   segments: Array<string>,
   amount: number,
   isNested?: boolean
-): Template {
+): Amountable {
   if (segments.length === 0) {
     return applyAmountSetting(template, amount);
   }
@@ -58,7 +58,7 @@ export function applyAmounts(
   return template.map(t => applyAmounts(t, segments, amount, true));
 }
 
-export function applyAmountSetting(template: Template, amount: number): Template {
+export function applyAmountSetting(template: Amountable, amount: number): Amountable {
   const isArray = template instanceof Array;
   const newTemplate = isArray ? [] : {};
   const [key, element] = Object.entries(template)[0];

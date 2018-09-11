@@ -2,7 +2,6 @@ import State from './State';
 
 const SEED = 321;
 
-
 describe('State', () => {
   it('should transform a template to a test case', () => {
     const template = {
