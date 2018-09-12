@@ -19,6 +19,17 @@ describe('operations/fakeData/fillFakeData', () => {
     });
   });
 
+  it('should pass on arguments', () => {
+    const template = {
+      myNumber: 'random.number.20',
+    };
+    const result = fillFakeData(template, SEED);
+
+    reset();
+
+    expect(result.myNumber).toBeLessThan(21);
+  });
+
   it('should respect the faker sequence', () => {
     const template = {
       myName: 'name.firstName',

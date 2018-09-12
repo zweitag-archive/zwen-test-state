@@ -19,9 +19,10 @@ export default function fillFakeData(template: Template, seed: number): Template
 
 function translateValue(value: TranslateValue): TranslateValue {
   if (typeof value === 'string') {
-    const [domain, method] = value.split('.');
+    const [domain, method, arg] = value.split('.');
     if (domain && method) {
-      return faker[domain][method]();
+      const fakerArg = isNaN(arg) ? arg : parseInt(arg, 10);
+      return faker[domain][method](fakerArg);
     }
   }
 
