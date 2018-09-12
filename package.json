@@ -1,6 +1,6 @@
 {
   "name": "zwen-test-state",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Zweitag GmbH @zweitag",
   "contributors": [
     "Alex Kott <alexander.kott@zweitag.de>"
@@ -17,6 +17,7 @@
     "lodash.set": "^4.3.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
@@ -34,7 +35,11 @@
     ]
   },
   "scripts": {
+    "clear": "rm -rf ./lib && mkdir ./lib",
     "flow": "flow check",
-    "test": "jest --watch"
+    "prepare": "npm run clear && npm run transpile && npm run test:prepare",
+    "test": "jest --watch",
+    "test:prepare": "jest && npm run flow",
+    "transpile": "./node_modules/.bin/babel src -d lib --ignore **/*.test.js,_flowTypes.js"
   }
 }
